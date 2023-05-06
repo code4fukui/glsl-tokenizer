@@ -1,10 +1,8 @@
-module.exports = tokenize
-
-var literals100 = require('./lib/literals')
-  , operators = require('./lib/operators')
-  , builtins100 = require('./lib/builtins')
-  , literals300es = require('./lib/literals-300es')
-  , builtins300es = require('./lib/builtins-300es')
+import literals100 from './lib/literals.js';
+import operators from './lib/operators.js';
+import builtins100 from './lib/builtins.js';
+import literals300es from './lib/literals-300es.js';
+import builtins300es from './lib/builtins-300es.js';
 
 var NORMAL = 999          // <-- never emitted
   , TOKEN = 9999          // <-- never emitted
@@ -36,7 +34,7 @@ var map = [
   , 'integer'
 ]
 
-function tokenize(opt) {
+export function tokenize(opt) {
   var i = 0
     , total = 0
     , mode = NORMAL

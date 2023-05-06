@@ -1,8 +1,6 @@
-var tokenize = require('./index')
+import { tokenize } from './index.js';
 
-module.exports = tokenizeString
-
-function tokenizeString(str, opt) {
+export function tokenizeString(str, opt) {
   var generator = tokenize(opt)
   var tokens = []
 
