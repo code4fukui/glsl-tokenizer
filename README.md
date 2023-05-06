@@ -4,19 +4,19 @@ Maps GLSL string data into GLSL tokens, either synchronously or using a
 streaming API.
 
 ``` javascript
-var tokenString = require('glsl-tokenizer/string')
-var tokenStream = require('glsl-tokenizer/stream')
-var fs = require('fs')
+import { tokenString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
 
-// Synchronously:
-var tokens = tokenString(fs.readFileSync('some.glsl'))
+const glsl = "const src = `#version 300 es
+precision highp float;
 
-// Streaming API:
-fs.createReadStream('some.glsl')
-  .pipe(tokenStream())
-  .on('data', function(token) {
-    console.log(token.data, token.position, token.type)
-  })
+out vec4 outColor;
+
+void main() {
+  outColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+";
+
+const tokens = tokenString(glsl, { version: "300 es" });
 ```
 
 # API
