@@ -1,45 +1,32 @@
-# glsl-tokenizer [![Build Status](https://travis-ci.org/glslify/glsl-tokenizer.svg?branch=master)](https://travis-ci.org/glslify/glsl-tokenizer)
+# glsl-tokenizer
 
-Maps GLSL string data into GLSL tokens, either synchronously or using a
-streaming API.
+Maps GLSL string data into GLSL tokens, either synchronously or using a streaming API.
 
-``` javascript
+## Usage
+
+```javascript
 import { tokenString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
 
-const glsl = "const src = `#version 300 es
-precision highp float;
-
-out vec4 outColor;
-
-void main() {
-  outColor = vec4(0.0, 0.0, 0.0, 1.0);
-}
-";
+const glsl = "const src = `#version 300 es\nprecision highp float;\n\nout vec4 outColor;\n\nvoid main() {\n  outColor = vec4(0.0, 0.0, 0.0, 1.0);\n}";
 
 const tokens = tokenString(glsl, { version: "300 es" });
 ```
 
-# API
+## API
 
-## tokens = require('glsl-tokenizer/string')(src, [opt])
+### `tokens = require('glsl-tokenizer/string')(src, [opt])`
 
-Returns an array of `tokens` given the GLSL source string `src`
+Returns an array of `tokens` given the GLSL source string `src`.
 
 You can specify `opt.version` string to use different keywords/builtins, such as `'300 es'` for WebGL2. Otherwise, will assume GLSL 100 (WebGL1).
 
-```js
-var tokens = tokenizer(src, {
-  version: '300 es'
-})
-```
-
-## stream = require('glsl-tokenizer/stream')([opt])
+### `stream = require('glsl-tokenizer/stream')([opt])`
 
 Emits 'data' events whenever a token is parsed with a token object as output.
 
 As above, you can specify `opt.version`.
 
-# Tokens
+## Tokens
 
 ```javascript
 { 'type': TOKEN_TYPE
@@ -63,6 +50,6 @@ The available token types are:
 * `whitespace`
 * `keyword`
 
-# License
+## License
 
-MIT, see [LICENSE.md](LICENSE.md) for further information.
+MIT
