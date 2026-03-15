@@ -1,28 +1,38 @@
 # glsl-tokenizer
 
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
 Maps GLSL string data into GLSL tokens, either synchronously or using a streaming API.
 
 ## Usage
 
 ```javascript
-import { tokenString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
+import { tokenizeString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
 
-const glsl = "const src = `#version 300 es\nprecision highp float;\n\nout vec4 outColor;\n\nvoid main() {\n  outColor = vec4(0.0, 0.0, 0.0, 1.0);\n}";
+const glsl = `#version 300 es
+precision highp float;
 
-const tokens = tokenString(glsl, { version: "300 es" });
+out vec4 outColor;
+
+void main() {
+  outColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+`;
+
+const tokens = tokenizeString(glsl, { version: "300 es" });
 ```
 
 ## API
 
-### `tokens = require('glsl-tokenizer/string')(src, [opt])`
+### `tokenizeString(src, [opt])`
 
 Returns an array of `tokens` given the GLSL source string `src`.
 
 You can specify `opt.version` string to use different keywords/builtins, such as `'300 es'` for WebGL2. Otherwise, will assume GLSL 100 (WebGL1).
 
-### `stream = require('glsl-tokenizer/stream')([opt])`
+### `createStream([opt])`
 
-Emits 'data' events whenever a token is parsed with a token object as output.
+Returns a readable stream that emits 'data' events whenever a token is parsed, with a token object as output.
 
 As above, you can specify `opt.version`.
 
