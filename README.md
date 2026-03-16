@@ -62,4 +62,4 @@ The available token types are:
 
 ## License
 
-MIT
+MIT License — see [LICENSE](LICENSE).
