@@ -1,3 +1,7 @@
 node_modules
 npm-debug.log
 .DS_Store
+
+# auto-added by meta-ops
+node_modules/
+Thumbs.db
