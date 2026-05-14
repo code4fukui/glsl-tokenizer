@@ -1,12 +1,32 @@
-# glsl-tokenizer [![Build Status](https://travis-ci.org/glslify/glsl-tokenizer.svg?branch=master)](https://travis-ci.org/glslify/glsl-tokenizer)
+# glsl-tokenizer
 
-Maps GLSL string data into GLSL tokens, either synchronously or using a
-streaming API.
+[
+![npm version](https://badge.fury.io/js/glsl-tokenizer.svg)
+](https://badge.fury.io/js/glsl-tokenizer)
+[
+![build status](https://secure.travis-ci.org/gl-modules/glsl-tokenizer.png)
+](http://travis-ci.org/gl-modules/glsl-tokenizer)
 
-``` javascript
-import { tokenString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
 
-const glsl = "const src = `#version 300 es
+Maps GLSL source code into tokens, either synchronously or via a Node.js stream. Supports GLSL 100 (WebGL 1) and 300 es (WebGL 2).
+
+## Install
+
+```bash
+npm install glsl-tokenizer
+```
+
+## Usage
+
+### Browser / Deno (ES Modules)
+
+The synchronous `tokenizeString` function is suitable for browser and Deno environments.
+
+```javascript
+import { tokenizeString } from "https://code4fukui.github.io/glsl-tokenizer/string.js";
+
+const glsl = `#version 300 es
 precision highp float;
 
 out vec4 outColor;
@@ -14,55 +34,69 @@ out vec4 outColor;
 void main() {
   outColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
-";
+`;
 
-const tokens = tokenString(glsl, { version: "300 es" });
+const tokens = tokenizeString(glsl, { version: "300 es" });
+console.log(tokens);
 ```
 
-# API
+### Node.js (Stream)
 
-## tokens = require('glsl-tokenizer/string')(src, [opt])
-
-Returns an array of `tokens` given the GLSL source string `src`
-
-You can specify `opt.version` string to use different keywords/builtins, such as `'300 es'` for WebGL2. Otherwise, will assume GLSL 100 (WebGL1).
-
-```js
-var tokens = tokenizer(src, {
-  version: '300 es'
-})
-```
-
-## stream = require('glsl-tokenizer/stream')([opt])
-
-Emits 'data' events whenever a token is parsed with a token object as output.
-
-As above, you can specify `opt.version`.
-
-# Tokens
+For Node.js, you can use a streaming API to process large files efficiently.
 
 ```javascript
-{ 'type': TOKEN_TYPE
-, 'data': "string of constituent data"
-, 'position': integer position within the GLSL source
-, 'line': line number within the GLSL source
-, 'column': column number within the GLSL source }
+const fs = require('fs');
+const createStream = require('glsl-tokenizer/stream');
+
+fs.createReadStream('my-shader.glsl')
+  .pipe(createStream({ version: '300 es' }))
+  .on('data', (token) => {
+    console.log(token);
+  });
+```
+
+## API
+
+### `tokenizeString(src, [options])`
+
+Returns an array of token objects from the GLSL source string `src`.
+
+-   `options.version`: Specify `'300 es'` to use GLSL 300 es keywords and built-ins for WebGL 2. Defaults to GLSL 100 for WebGL 1.
+
+### `createStream([options])`
+
+Returns a Node.js readable stream that emits a `data` event for each parsed token object.
+
+-   `options.version`: Same as `tokenizeString`.
+
+## Token Objects
+
+Each token is an object with the following structure:
+
+```javascript
+{
+  "type": "keyword",
+  "data": "precision",
+  "position": 1,
+  "line": 2,
+  "column": 9
+}
 ```
 
 The available token types are:
 
-* `block-comment`: `/* ... */`
-* `line-comment`: `// ... \n`
-* `preprocessor`: `# ... \n`
-* `operator`: Any operator. If it looks like punctuation, it's an operator.
-* `float`: Optionally suffixed with `f`
-* `ident`: User defined identifier.
-* `builtin`: Builtin function.
-* `eof`: Emitted on `end`; data will === `'(eof)'`.
-* `integer`
-* `whitespace`
-* `keyword`
+-   `block-comment`: `/* ... */`
+-   `line-comment`: `// ...`
+-   `preprocessor`: `# ...`
+-   `operator`: Punctuation and operators (e.g., `*`, `;`, `++`).
+-   `float`: Floating-point numbers, optionally suffixed with `f`.
+-   `integer`: Integer or hex literals.
+-   `ident`: User-defined identifiers.
+-   `builtin`: GLSL built-in functions and variables (e.g., `gl_Position`, `texture`).
+-   `keyword`: GLSL keywords (e.g., `precision`, `vec4`, `if`).
+-   `whitespace`: Any sequence of whitespace characters.
+-   `eof`: The end-of-file marker.
 
-# License
+## License
 
-MIT, see [LICENSE.md](LICENSE.md) for further information.
+MIT License — see [LICENSE](LICENSE).
